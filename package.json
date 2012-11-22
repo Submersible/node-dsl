@@ -1,0 +1,29 @@
+{
+  "name": "dsl",
+  "version": "0.0.1",
+  "description": "Build your own DSL!",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Submersible/node-dsl.git"
+  },
+  "keywords": [
+    "dsl",
+    "declarative",
+    "functional",
+    "language",
+    "pure",
+    "chain"
+  ],
+  "author": "Ryan Munro <ryan@ringer.io>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "~0.9.2"
+  },
+  "devDependencies": {
+    "tap": "~0.3.2"
+  }
+}
