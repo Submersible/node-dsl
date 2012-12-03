@@ -1,8 +1,68 @@
-/*jslint node: true, nomen: true, vars: true */
+/*jslint node: true, nomen: true, vars: true, todo: true */
 
 'use strict';
 
 var _ = require('lodash');
+
+var alternates = {
+    'break': 'interupt', // breach fault escape
+    'case': 'match', // 
+    'catch': 'grab', // snatch seize
+    'class': 'struct', //
+    'continue': 'proceed', // keepOn keepGoing
+    'debugger': 'debug',
+    'default': 'fallback', // defaults
+    'delete': 'remove', // erase
+    'do': 'go', // perform act
+    'else': '',
+    'enum': '',
+    'export': '',
+    'extends': '',
+    'finally': '',
+    'for': '',
+    'function': '',
+    'if': '',
+    'implements': '',
+    'import': '',
+    'in': '',
+    'instanceof': '',
+    'interface': '',
+    'let': '',
+    'new': '',
+    'package': '',
+    'private': '',
+    'protected': '',
+    'public': '',
+    'return': '',
+    'static': '',
+    'super': '',
+    'switch': '',
+    'this': '',
+    'throw': '',
+    'try': '',
+    'typeof': '',
+    'var': '',
+    'void': '',
+    'while': '',
+    'with': '',
+    'yield': ''
+};
+
+/**
+ * @struct dsl {
+ *     {Array} _actions
+ *     {Boolean} _prototype
+ * }
+ */
+/*
+dsl(lang)
+    .action(...)
+    .methods
+    .delMethods
+    .delCallable
+    .fakeArray(fn)
+    .notArray()
+*/
 
 function dsl(actions) {
     var obj = Object.create(dsl.prototype);
@@ -57,7 +117,13 @@ dsl.prototype.done = function () {
             };
             _.extend(obj, prototype, opts);
             obj._actions = obj._actions || [];
-            console.log('actions', obj._actions);
+            // @TODO Gross, replace with dsl(lang).action(...).done();
+            obj._addAction = function () {
+                return create({
+                    _actions: this._actions.concat(_.toArray(arguments))
+                });
+            };
+            // console.log('actions', obj._actions);
 
             return obj;
         };
@@ -73,7 +139,14 @@ dsl.prototype.done = function () {
         };
     });
 
-    console.log('rwarr!!!', this, prototype);
+    method_fns.map(function (callable) {
+        return callable[1];
+    }).forEach(function (callable) {
+        var method = callable[0], fn = callable[1];
+        prototype[method] = fn;
+    });
+
+    // console.log('rwarr!!!', this, prototype);
     return create();
 };
 
