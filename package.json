@@ -1,6 +1,6 @@
 {
   "name": "dsl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Build your own DSL!",
   "main": "index.js",
   "scripts": {

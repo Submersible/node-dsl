@@ -2,8 +2,18 @@
 
 'use strict';
 
+/**
+ * @TODO Can we embed this?
+ */
 var _ = require('lodash');
 
+/**
+ * Though one can technically use any reserved keyword as a method--it's frowned
+ * upon, and JSLint yells at me.  So let's provide alternate words to people who
+ * want to use context-free grammar.
+ * Let's still allow the original names incase a progammer is using
+ * CoffeeScript, or wants to break the rules!
+ */
 var alternates = {
     'break': 'interupt', // breach fault escape
     'case': 'match', // 
@@ -104,31 +114,39 @@ dsl.prototype.done = function () {
     var callable = _.find(this._actions, function (a) {
         return a[0] === 'call' && typeof a[1][0] === 'function';
     });
+
     if (callable) {
         callable = callable[1][0];
     }
 
+    /**
+     * Build up chainable object
+     */
     var create, prototype = {};
+
+    // @TODO Gross, replace with dsl(lang).action(...).done();
+    prototype._addAction = function () {
+        return create({
+            _actions: this._actions.concat(_.toArray(arguments))
+        });
+    };
 
     if (callable) {
         create = function (opts) {
             var obj = function () {
                 return callable.apply(obj, arguments);
             };
-            _.extend(obj, prototype, opts);
-            obj._actions = obj._actions || [];
-            // @TODO Gross, replace with dsl(lang).action(...).done();
-            obj._addAction = function () {
-                return create({
-                    _actions: this._actions.concat(_.toArray(arguments))
-                });
-            };
-            // console.log('actions', obj._actions);
-
+            _.extend(obj, prototype, opts, {
+                _actions: (opts && opts._actions) || []
+            });
             return obj;
         };
     } else {
-        throw new Error('@TODO non-callable DSL');
+        create = function (opts) {
+            return _.extend(Object.create(prototype), opts, {
+                _actions: opts._actions || []
+            });
+        };
     }
 
     methods.forEach(function (method) {
@@ -146,7 +164,6 @@ dsl.prototype.done = function () {
         prototype[method] = fn;
     });
 
-    // console.log('rwarr!!!', this, prototype);
     return create();
 };
 
