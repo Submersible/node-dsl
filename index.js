@@ -144,7 +144,7 @@ dsl.prototype.done = function () {
     } else {
         create = function (opts) {
             return _.extend(Object.create(prototype), opts, {
-                _actions: opts._actions || []
+                _actions: (opts && opts._actions) || []
             });
         };
     }
